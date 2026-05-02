@@ -13,7 +13,10 @@ class MainViewModel(private val context: Context) : ViewModel() {
     private val appRepository = AppRepository(context)
     private val settingsManager = SettingsManager(context)
 
-    private val _uiState = MutableStateFlow(UiState())
+    private val _uiState = MutableStateFlow(UiState(
+        trustedContactName = settingsManager.trustedContactName,
+        trustedContactPhone = settingsManager.trustedContactPhone
+    ))
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
     fun checkPermissions() {
