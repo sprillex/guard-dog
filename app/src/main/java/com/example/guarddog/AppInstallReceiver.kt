@@ -3,6 +3,7 @@ package com.example.guarddog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.telephony.SmsManager
 import android.util.Log
 
@@ -50,9 +51,14 @@ class AppInstallReceiver : BroadcastReceiver() {
     private fun getAppName(context: Context, packageName: String): String {
         return try {
             val packageManager = context.packageManager
-            val info = packageManager.getApplicationInfo(packageName, 0)
+            val info = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                packageManager.getApplicationInfo(packageName, PackageManager.ApplicationInfoFlags.of(0L))
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getApplicationInfo(packageName, 0)
+            }
             packageManager.getApplicationLabel(info).toString()
-        } catch (e: Exception) {
+        } catch (e: PackageManager.NameNotFoundException) {
             packageName
         }
     }
