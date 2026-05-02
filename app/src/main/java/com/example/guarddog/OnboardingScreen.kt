@@ -34,17 +34,17 @@ fun OnboardingScreen(uiState: UiState, viewModel: MainViewModel) {
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 result.data?.data?.let { uri ->
-                    val cursor = context.contentResolver.query(uri, null, null, null, null)
-                    if (cursor != null && cursor.moveToFirst()) {
-                        val nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                        val phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                    context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                        if (cursor.moveToFirst()) {
+                            val nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                            val phoneIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
 
-                        if (nameIndex != -1 && phoneIndex != -1) {
-                            val name = cursor.getString(nameIndex)
-                            val phone = cursor.getString(phoneIndex)
-                            viewModel.saveTrustedContact(name, phone)
+                            if (nameIndex != -1 && phoneIndex != -1) {
+                                val name = cursor.getString(nameIndex)
+                                val phone = cursor.getString(phoneIndex)
+                                viewModel.saveTrustedContact(name, phone)
+                            }
                         }
-                        cursor.close()
                     }
                 }
             }
