@@ -16,4 +16,5 @@
     <string name="select_contact_btn">Select Trusted Contact</string>
     <string name="trusted_contact_label">Trusted Contact: %1$s</string>
     <string name="change_contact_btn">Change Trusted Contact</string>
+    <string name="refresh_button">Refresh</string>
 </resources>
