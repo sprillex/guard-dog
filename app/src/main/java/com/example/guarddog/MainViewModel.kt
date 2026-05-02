@@ -11,6 +11,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+/**
+ * ViewModel responsible for managing the UI state of the application.
+ * Handles the background loading of app data and exposes it to the View via StateFlow.
+ * Also manages the flow for requesting necessary system permissions and storing settings.
+ */
 class MainViewModel(private val context: Context) : ViewModel() {
     private val appRepository = AppRepository(context)
     private val settingsManager = SettingsManager(context)
@@ -33,6 +38,10 @@ class MainViewModel(private val context: Context) : ViewModel() {
         }
     }
 
+    /**
+     * Triggers the background loading and threat analysis of all installed apps.
+     * Updates the `uiState` with the list of high-risk `SuspectApp` objects.
+     */
     fun loadApps() {
         viewModelScope.launch {
             val rawApps = appRepository.getGatheredAppData()

@@ -1,6 +1,28 @@
 # guard-dogApp Summary
 
 A targeted, sideloaded Android utility designed to protect vulnerable users by identifying recently installed apps that exhibit malicious or predatory behaviors. It cross-references installation timestamps (last 7 days) with usage stats (last 24 hours) and applies a Threat Score based on requested permissions and system intents. High-risk apps are surfaced in a simplified UI with a direct, one-click uninstall prompt.  It also has the abiility to notify a user contact to warn of new app installations.
+
+## Build & Installation
+
+To build the project and create an APK for sideloading, run the following command from the repository root:
+
+```bash
+./gradlew assembleDebug
+```
+
+Once the APK is built (located in `app/build/outputs/apk/debug/app-debug.apk`), you can install it on a connected device using Android Debug Bridge (ADB):
+
+```bash
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
+
+## Architecture
+
+This application follows the **MVVM (Model-View-ViewModel)** architectural pattern:
+- **Model (Repositories):** `AppRepository` fetches raw package and usage stats from the Android system. `SettingsManager` manages encrypted local preferences. `ThreatAnalyzer` acts as the domain engine, converting raw app data into actionable `SuspectApp` objects.
+- **ViewModel:** `MainViewModel` manages the background data-loading coroutines and exposes the current `UiState` via a `StateFlow`.
+- **View (Jetpack Compose):** UI components like `ThreatListScreen` and `OnboardingScreen` observe the `UiState` and reactively update to display threats or request necessary permissions.
+
 Phase 1: Data Gathering (The Repositories)
 
     Request Required Permissions: Ensure the app's AndroidManifest.xml includes PACKAGE_USAGE_STATS (requires settings redirect) and QUERY_ALL_PACKAGES (safe since you are sideloading).

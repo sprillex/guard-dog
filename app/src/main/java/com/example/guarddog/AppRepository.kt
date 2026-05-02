@@ -20,8 +20,19 @@ data class AppData(
     val isSideloaded: Boolean
 )
 
+/**
+ * Repository class responsible for aggregating data from the Android OS.
+ * Interfaces with PackageManager and UsageStatsManager to extract a unified
+ * view of installed apps, their usage history, and their system capabilities.
+ */
 class AppRepository(private val context: Context) {
 
+    /**
+     * Gathers data for all non-system apps installed within the last 7 days.
+     * Executes heavy queries on a background IO thread to prevent UI blocking.
+     *
+     * @return A list of [AppData] objects containing raw package and usage information.
+     */
     suspend fun getGatheredAppData(): List<AppData> = withContext(Dispatchers.IO) {
         val packageManager = context.packageManager
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
@@ -92,6 +103,13 @@ class AppRepository(private val context: Context) {
         }
     }
 
+    /**
+     * Fetches detailed application data for a single specific package name.
+     * Used primarily by the BroadcastReceiver when a new app is installed.
+     *
+     * @param packageName The specific package to query.
+     * @return An [AppData] object, or null if the package is a system app or not found.
+     */
     fun getAppInfo(packageName: String): AppData? {
         val packageManager = context.packageManager
         return try {
