@@ -5,9 +5,11 @@ import android.content.Context
 import android.os.Process
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class MainViewModel(private val context: Context) : ViewModel() {
     private val appRepository = AppRepository(context)
@@ -32,12 +34,14 @@ class MainViewModel(private val context: Context) : ViewModel() {
     }
 
     fun loadApps() {
-        val rawApps = appRepository.getGatheredAppData()
-        val suspectApps = rawApps.mapNotNull { ThreatAnalyzer.analyze(it) }
-            .filter { it.score >= 3 }
-            .sortedByDescending { it.appData.lastTimeUsed }
+        viewModelScope.launch {
+            val rawApps = appRepository.getGatheredAppData()
+            val suspectApps = rawApps.mapNotNull { ThreatAnalyzer.analyze(it) }
+                .filter { it.score >= 3 }
+                .sortedByDescending { it.appData.lastTimeUsed }
 
-        _uiState.value = _uiState.value.copy(suspectApps = suspectApps)
+            _uiState.value = _uiState.value.copy(suspectApps = suspectApps)
+        }
     }
 
     fun getTrustedContactName(): String? = settingsManager.trustedContactName

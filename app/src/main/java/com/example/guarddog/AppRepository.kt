@@ -7,6 +7,8 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import java.util.Calendar
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 data class AppData(
     val packageName: String,
@@ -20,7 +22,7 @@ data class AppData(
 
 class AppRepository(private val context: Context) {
 
-    fun getGatheredAppData(): List<AppData> {
+    suspend fun getGatheredAppData(): List<AppData> = withContext(Dispatchers.IO) {
         val packageManager = context.packageManager
         val usageStatsManager = context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
 
@@ -61,7 +63,7 @@ class AppRepository(private val context: Context) {
             .toSet()
 
         // 4. Combine and check Installer Source
-        return recentInstalls.map { pkg ->
+        recentInstalls.map { pkg ->
             val pkgName = pkg.packageName
             val usage = usedApps[pkgName]
 
