@@ -11,6 +11,8 @@ class AppInstallReceiver : BroadcastReceiver() {
         if (intent.action == Intent.ACTION_PACKAGE_ADDED) {
             val packageName = intent.data?.schemeSpecificPart ?: return
 
+            if (packageName == context.packageName) return
+
             val repository = AppRepository(context)
             val settingsManager = SettingsManager(context)
 

@@ -34,7 +34,7 @@ class AppRepository(private val context: Context) {
 
         val recentInstalls = packages.filter {
             val isSystemApp = (it.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0
-            !isSystemApp && it.firstInstallTime >= sevenDaysAgo
+            !isSystemApp && it.firstInstallTime >= sevenDaysAgo && it.packageName != context.packageName
         }
 
         // 2. Fetch Recent Usage (last 24 hours)
