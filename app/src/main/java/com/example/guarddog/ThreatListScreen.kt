@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
@@ -19,7 +20,7 @@ fun ThreatListScreen(uiState: UiState) {
 
     if (uiState.suspectApps.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No high-risk apps detected.", style = MaterialTheme.typography.titleLarge)
+            Text(stringResource(R.string.no_threats), style = MaterialTheme.typography.titleLarge)
         }
     } else {
         LazyColumn(
@@ -39,14 +40,14 @@ fun ThreatListScreen(uiState: UiState) {
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Threat Detected: ${suspectApp.appData.packageName}",
+                            text = stringResource(R.string.threat_detected, suspectApp.appData.packageName),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "Threat Score: ${suspectApp.score}",
+                            text = stringResource(R.string.threat_score, suspectApp.score),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
@@ -54,7 +55,7 @@ fun ThreatListScreen(uiState: UiState) {
                         Spacer(modifier = Modifier.height(8.dp))
                         suspectApp.scoreBreakdown.forEach { reason ->
                             Text(
-                                text = "• $reason",
+                                text = stringResource(R.string.threat_reason_bullet, reason),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
@@ -71,7 +72,7 @@ fun ThreatListScreen(uiState: UiState) {
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text(
-                                "UNINSTALL",
+                                stringResource(R.string.uninstall_button),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onError
                             )

@@ -40,7 +40,7 @@ class AppInstallReceiver : BroadcastReceiver() {
                 SmsManager.getDefault()
             }
             val appName = getAppName(context, suspectApp.appData.packageName)
-            val message = "GuardDog Alert: A high-risk app ($appName) was just installed on my phone."
+            val message = context.getString(R.string.sms_warning_message, appName)
 
             smsManager?.sendTextMessage(phoneNumber, null, message, null, null)
         } catch (e: Exception) {
