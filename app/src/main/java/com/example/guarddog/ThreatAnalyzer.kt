@@ -17,7 +17,7 @@ object ThreatAnalyzer {
         return evaluateApp(appData)
     }
 
-    fun evaluateApp(appData: AppData, enforceUsageRequirement: Boolean = true): SuspectApp? {
+    fun evaluateApp(appData: AppData, enforceUsageRequirement: Boolean = false): SuspectApp? {
         if (enforceUsageRequirement) {
             val recentlyInstalled = System.currentTimeMillis() - appData.firstInstallTime <= 7L * 24 * 60 * 60 * 1000
             val recentlyUsed = appData.lastTimeUsed > 0L
