@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.guarddog.ui.theme.Dimens
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,19 +50,19 @@ fun ThreatListScreen(uiState: UiState, onRefresh: () -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(Dimens.PaddingMedium)
             ) {
             items(uiState.suspectApps) { suspectApp ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = Dimens.PaddingSmall),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(Dimens.PaddingMedium)
                     ) {
                         Text(
                             text = stringResource(R.string.threat_detected, suspectApp.appData.packageName),
@@ -70,14 +70,14 @@ fun ThreatListScreen(uiState: UiState, onRefresh: () -> Unit) {
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
                         Text(
                             text = stringResource(R.string.threat_score, suspectApp.score),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
                         suspectApp.scoreBreakdown.forEach { reason ->
                             Text(
                                 text = stringResource(R.string.threat_reason_bullet, reason),
@@ -85,7 +85,7 @@ fun ThreatListScreen(uiState: UiState, onRefresh: () -> Unit) {
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                         Button(
                             onClick = {
                                 val intent = Intent(Intent.ACTION_DELETE).apply {

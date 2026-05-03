@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
+import com.example.guarddog.ui.theme.Dimens
 
 @Composable
 fun OnboardingScreen(uiState: UiState, viewModel: MainViewModel) {
@@ -55,36 +55,36 @@ fun OnboardingScreen(uiState: UiState, viewModel: MainViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(Dimens.PaddingMedium),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         if (!uiState.hasUsageStatsPermission) {
             Text(stringResource(R.string.onboarding_usage_desc), style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
             Button(onClick = {
                 usageStatsLauncher.launch(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
             }) {
                 Text(stringResource(R.string.grant_usage_btn))
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
         }
 
         if (!uiState.hasSmsPermission) {
             Text(stringResource(R.string.onboarding_sms_desc), style = MaterialTheme.typography.bodyLarge)
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
             Button(onClick = {
                 smsPermissionLauncher.launch(android.Manifest.permission.SEND_SMS)
             }) {
                 Text(stringResource(R.string.grant_sms_btn))
             }
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(Dimens.PaddingLarge))
         }
 
         if (uiState.hasUsageStatsPermission && uiState.hasSmsPermission) {
             if (uiState.trustedContactName == null) {
                 Text(stringResource(R.string.select_contact_desc), style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                 Button(onClick = {
                     val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
                     contactPickerLauncher.launch(intent)
@@ -93,7 +93,7 @@ fun OnboardingScreen(uiState: UiState, viewModel: MainViewModel) {
                 }
             } else {
                 Text(stringResource(R.string.trusted_contact_label, uiState.trustedContactName), style = MaterialTheme.typography.bodyLarge)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                 Button(onClick = {
                     val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
                     contactPickerLauncher.launch(intent)
