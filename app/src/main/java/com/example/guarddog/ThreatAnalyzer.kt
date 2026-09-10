@@ -6,8 +6,19 @@ data class SuspectApp(
     val scoreBreakdown: List<String>
 )
 
+/**
+ * Core domain engine responsible for evaluating applications for potentially malicious or
+ * predatory behaviors based on their requested permissions and system intents.
+ */
 object ThreatAnalyzer {
 
+    /**
+     * Convenience method to evaluate an app without enforcing the 24-hour usage requirement.
+     * Often used during immediate installation broadcast events.
+     *
+     * @param appData The raw application data to be analyzed.
+     * @return A [SuspectApp] object if the app scores points, or null if it's considered safe.
+     */
     fun analyze(appData: AppData): SuspectApp? {
         // Base Requirement: The app must exist in both the 7-day install list AND the 24-hour usage list.
         // For our SMS logic to work immediately, we skip this check ONLY if we explicitly tell it to via a flag,
@@ -17,6 +28,23 @@ object ThreatAnalyzer {
         return evaluateApp(appData)
     }
 
+    /**
+     * Evaluates the threat level of a given application using a weighted scoring system.
+     *
+     * The scoring is based on the following rules:
+     * - [+1] SYSTEM_ALERT_WINDOW (Overlay Risk)
+     * - [+1] Sideloaded (Not from Google Play)
+     * - [+1] Registers as CATEGORY_HOME (Home Hijacker)
+     * - [+2] Does not register as CATEGORY_LAUNCHER (Hidden App)
+     * - [+3] SMS Permissions (Financial/2FA Risk)
+     * - [+3] Device Admin / Accessibility (Hostage Risk)
+     *
+     * Apps scoring 3 or higher are considered high-risk.
+     *
+     * @param appData The raw application data to be analyzed.
+     * @param enforceUsageRequirement If true, drops apps not installed within the last 7 days or not used within 24 hours.
+     * @return A [SuspectApp] object containing the score and breakdown, or null if it doesn't meet the baseline criteria.
+     */
     fun evaluateApp(appData: AppData, enforceUsageRequirement: Boolean = false): SuspectApp? {
         if (enforceUsageRequirement) {
             val recentlyInstalled = System.currentTimeMillis() - appData.firstInstallTime <= 7L * 24 * 60 * 60 * 1000

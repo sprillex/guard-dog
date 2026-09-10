@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">GuardDog</string>
+    <string name="notification_title">GuardDog Active</string>
+    <string name="notification_text">Monitoring for newly installed high-risk apps.</string>
+    <string name="sms_warning_message">GuardDog Alert: A high-risk app (%1$s) was just installed on my phone.</string>
+    <string name="no_threats">No high-risk apps detected.</string>
+    <string name="threat_detected">Threat Detected: %1$s</string>
+    <string name="threat_score">Threat Score: %1$d</string>
+    <string name="threat_reason_bullet">• %1$s</string>
+    <string name="uninstall_button">UNINSTALL</string>
+    <string name="onboarding_usage_desc">GuardDog needs Usage Access to detect recently used apps to protect you from malicious software.</string>
+    <string name="grant_usage_btn">Grant Usage Access</string>
+    <string name="onboarding_sms_desc">GuardDog can notify a trusted contact if a dangerous app is installed. We need SMS permission to do this.</string>
+    <string name="grant_sms_btn">Grant SMS Permission</string>
+    <string name="select_contact_desc">Select a trusted contact to notify in case of a threat.</string>
+    <string name="select_contact_btn">Select Trusted Contact</string>
+    <string name="trusted_contact_label">Trusted Contact: %1$s</string>
+    <string name="change_contact_btn">Change Trusted Contact</string>
+    <string name="refresh_button">Refresh</string>
 </resources>

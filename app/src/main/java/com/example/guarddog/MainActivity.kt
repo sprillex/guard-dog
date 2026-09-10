@@ -33,7 +33,10 @@ class MainActivity : ComponentActivity() {
                         LaunchedEffect(Unit) {
                             startGuardDogService()
                         }
-                        ThreatListScreen(uiState)
+                        ThreatListScreen(
+                            uiState = uiState,
+                            onRefresh = { viewModel.loadApps() }
+                        )
                     } else {
                         OnboardingScreen(uiState, viewModel)
                     }

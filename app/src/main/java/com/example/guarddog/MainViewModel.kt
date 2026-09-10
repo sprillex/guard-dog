@@ -5,10 +5,17 @@ import android.content.Context
 import android.os.Process
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
+/**
+ * ViewModel responsible for managing the UI state of the application.
+ * Handles the background loading of app data and exposes it to the View via StateFlow.
+ * Also manages the flow for requesting necessary system permissions and storing settings.
+ */
 class MainViewModel(private val context: Context) : ViewModel() {
     private val appRepository = AppRepository(context)
     private val settingsManager = SettingsManager(context)
@@ -31,13 +38,19 @@ class MainViewModel(private val context: Context) : ViewModel() {
         }
     }
 
+    /**
+     * Triggers the background loading and threat analysis of all installed apps.
+     * Updates the `uiState` with the list of high-risk `SuspectApp` objects.
+     */
     fun loadApps() {
-        val rawApps = appRepository.getGatheredAppData()
-        val suspectApps = rawApps.mapNotNull { ThreatAnalyzer.analyze(it) }
-            .filter { it.score >= 3 }
-            .sortedByDescending { it.appData.lastTimeUsed }
+        viewModelScope.launch {
+            val rawApps = appRepository.getGatheredAppData()
+            val suspectApps = rawApps.mapNotNull { ThreatAnalyzer.analyze(it) }
+                .filter { it.score >= 3 }
+                .sortedByDescending { it.appData.lastTimeUsed }
 
-        _uiState.value = _uiState.value.copy(suspectApps = suspectApps)
+            _uiState.value = _uiState.value.copy(suspectApps = suspectApps)
+        }
     }
 
     fun getTrustedContactName(): String? = settingsManager.trustedContactName

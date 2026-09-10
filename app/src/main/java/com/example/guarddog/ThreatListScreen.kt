@@ -5,61 +5,87 @@ import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.guarddog.ui.theme.Dimens
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ThreatListScreen(uiState: UiState) {
+fun ThreatListScreen(uiState: UiState, onRefresh: () -> Unit) {
     val context = LocalContext.current
 
-    if (uiState.suspectApps.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("No high-risk apps detected.", style = MaterialTheme.typography.titleLarge)
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.app_name)) },
+                actions = {
+                    IconButton(onClick = onRefresh) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = stringResource(R.string.refresh_button)
+                        )
+                    }
+                }
+            )
         }
-    } else {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
+    ) { paddingValues ->
+        if (uiState.suspectApps.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(stringResource(R.string.no_threats), style = MaterialTheme.typography.titleLarge)
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(Dimens.PaddingMedium)
+            ) {
             items(uiState.suspectApps) { suspectApp ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp),
+                        .padding(vertical = Dimens.PaddingSmall),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer)
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp)
+                            .padding(Dimens.PaddingMedium)
                     ) {
                         Text(
-                            text = "Threat Detected: ${suspectApp.appData.packageName}",
+                            text = stringResource(R.string.threat_detected, suspectApp.appData.packageName),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
                         Text(
-                            text = "Threat Score: ${suspectApp.score}",
+                            text = stringResource(R.string.threat_score, suspectApp.score),
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingSmall))
                         suspectApp.scoreBreakdown.forEach { reason ->
                             Text(
-                                text = "• $reason",
+                                text = stringResource(R.string.threat_reason_bullet, reason),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onErrorContainer
                             )
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(Dimens.PaddingMedium))
                         Button(
                             onClick = {
                                 val intent = Intent(Intent.ACTION_DELETE).apply {
@@ -71,7 +97,7 @@ fun ThreatListScreen(uiState: UiState) {
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                         ) {
                             Text(
-                                "UNINSTALL",
+                                stringResource(R.string.uninstall_button),
                                 style = MaterialTheme.typography.titleLarge,
                                 color = MaterialTheme.colorScheme.onError
                             )
@@ -81,4 +107,5 @@ fun ThreatListScreen(uiState: UiState) {
             }
         }
     }
+}
 }
